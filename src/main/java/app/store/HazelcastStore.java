@@ -1,26 +1,15 @@
-
 package app.store;
-
-import com.hazelcast.client.HazelcastClient;
-import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.IMap;
-import app.model.Student;
-
-public class HazelcastStore {
-    static HazelcastInstance hz;
-    static IMap<String, Student> map;
-
-    public static void init() {
-        hz = HazelcastClient.newHazelcastClient(); // config dosyasına bağlanır
-        map = hz.getMap("ogrenciler");
-        for (int i = 0; i < 10000; i++) {
-            String id = "2025" + String.format("%06d", i);
-            Student s = new Student(id, "Ad Soyad " + i, "Bilgisayar");
-            map.put(id, s);
-        }
-    }
-
-    public static Student get(String id) {
-        return map.get(id);
-    }
+import com.hazelcast.core.*; import com.hazelcast.config.Config;
+import com.google.gson.Gson; import app.model.Student; import java.util.Random;
+import com.hazelcast.map.IMap;
+public class HazelcastStore{
+ static HazelcastInstance hz=Hazelcast.newHazelcastInstance(new Config());
+ static IMap<String,String> m=hz.getMap("students"); static Gson g=new Gson();
+ public static void init(){for(int i=1;i<=10000;i++){String n="202500"+i;
+ m.put(n,g.toJson(new Student(n,"Student-"+i,dep())));}} 
+ public static String get(String n){return m.get(n);} 
+ static String dep(){String[] d={"Classical Turkish Music","Turkish Folk Music","Computer Engineering"};
+ return d[new Random().nextInt(d.length)];}
 }
+
+
